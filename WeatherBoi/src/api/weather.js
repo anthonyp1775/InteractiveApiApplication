@@ -43,11 +43,12 @@ async function geocodeCity(cityName) {
     latitude: match.latitude,
     longitude: match.longitude,
     label: [match.name, match.admin1].filter(Boolean).join(", "),
+    timezone: match.timezone,
   };
 }
 
 export async function fetchWeatherForCity(cityName) {
-  const { latitude, longitude, label } = await geocodeCity(cityName);
+  const { latitude, longitude, label, timezone } = await geocodeCity(cityName);
 
   // weather.gov only covers US locations and requires resolving lat/lon
   // to a forecast grid endpoint before any forecast/observation data can be fetched.
@@ -96,6 +97,7 @@ export async function fetchWeatherForCity(cityName) {
     feelsLike: Math.round(feelsLikeC != null ? cToF(feelsLikeC) : todayPeriod.temperature),
     humidity: humidity != null ? Math.round(humidity) : "--",
     wind: windKmh != null ? Math.round(kmhToMph(windKmh)) : "--",
+    timezone,
   };
 
   const forecast = periods

@@ -11,6 +11,7 @@ import { fetchWeatherForCity } from "./api/weather.js";
 const DEFAULT_CITY = "Tampa, FL";
 
 function App(){
+  const [city, setCity] = useState(DEFAULT_CITY);
   const [weather, setWeather] = useState(null);
   const [forecast, setForecast] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +23,7 @@ function App(){
     setLoading(true);
     setError(null);
 
-    fetchWeatherForCity(DEFAULT_CITY)
+    fetchWeatherForCity(city)
       .then(({ current, forecast }) => {
         if (cancelled) return;
         setWeather(current);
@@ -40,13 +41,13 @@ function App(){
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [city]);
 
   return(
 <div className="app">
 <Navbar />
 <main>
-<SearchBar />
+<SearchBar onSearch={setCity} loading={loading} />
 
 {loading && <p className="status-message">Loading weather...</p>}
 {error && <p className="status-message error">{error}</p>}
@@ -60,6 +61,7 @@ temperature={weather.temperature}
 feelsLike={weather.feelsLike}
 humidity={weather.humidity}
 wind={weather.wind}
+timeZone={weather.timezone}
 />
 )}
 

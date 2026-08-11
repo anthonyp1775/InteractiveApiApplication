@@ -1,3 +1,5 @@
+import Clock from "./Clock.jsx";
+
 function WeatherCard (props) {
     return(
 <section className="weather-card">
@@ -5,6 +7,7 @@ function WeatherCard (props) {
     <div>
         <h2>{props.city}</h2>
         <p>{props.condition}</p>
+        <Clock timeZone={props.timeZone} />
     </div>
 <div className="weather-termperature">
 <span className="weather-icon">
