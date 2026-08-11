@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import "./App.css";
 
 import Navbar from  "./components/Navbar.jsx"
@@ -5,64 +6,79 @@ import SearchBar from "./components/SearchBar.jsx"
 import WeatherCard from "./components/WeatherCard.jsx";
 import ForecastCard from "./components/ForecastCard.jsx";
 import Footer from "./components/Footer.jsx";
+import { fetchWeatherForCity } from "./api/weather.js";
+
+const DEFAULT_CITY = "Tampa, FL";
 
 function App(){
+  const [weather, setWeather] = useState(null);
+  const [forecast, setForecast] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    setLoading(true);
+    setError(null);
+
+    fetchWeatherForCity(DEFAULT_CITY)
+      .then(({ current, forecast }) => {
+        if (cancelled) return;
+        setWeather(current);
+        setForecast(forecast);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setError(err.message);
+      })
+      .finally(() => {
+        if (cancelled) return;
+        setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return(
 <div className="app">
 <Navbar />
 <main>
 <SearchBar />
 
-<WeatherCard
-city="Tampa, Florida"
-condition="Partly Cloudy"
-icon=""
-temperature="82"
-feelsLike="86"
-humidity="72"
-wind="8"
-/>
+{loading && <p className="status-message">Loading weather...</p>}
+{error && <p className="status-message error">{error}</p>}
 
+{weather && (
+<WeatherCard
+city={weather.city}
+condition={weather.condition}
+icon={weather.icon}
+temperature={weather.temperature}
+feelsLike={weather.feelsLike}
+humidity={weather.humidity}
+wind={weather.wind}
+/>
+)}
+
+{forecast.length > 0 && (
 <section className="forecast-section">
 <h2>5-day Forecast</h2>
 <div className="forecast-container">
+{forecast.map((day) => (
   <ForecastCard
-  day="Monday"
-  icon=""
-  temperature="88"
-  condition="Sunny"
+  key={day.day}
+  day={day.day}
+  icon={day.icon}
+  temperature={day.temperature}
+  condition={day.condition}
   />
-
-  <ForecastCard
-  day="Tuesday"
-  icon=""
-  temperature="83"
-  condition="Rain"
-  />
-
-  <ForecastCard
-  day="Wednesday"
-  icon=""
-  temperature="86"
-  condition="cloudy"
-  />
-
-  <ForecastCard
-  day="Thursday"
-  icon=""
-  temperature="89"
-  condition="Sunny"
-  />
-
-  <ForecastCard
-  day="Friday"
-  icon=""
-  temperature="84"
-  condition="Showers"
-  />
-
+))}
 </div>
 </section>
+)}
 </main>
 <Footer />
 </div>

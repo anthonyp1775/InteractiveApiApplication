@@ -63,6 +63,9 @@ main{margin-top:18px}
 }
 .search-bar button:hover{filter:brightness(0.95)}
 
+.status-message{margin-top:18px;color:var(--muted)}
+.status-message.error{color:#b91c1c}
+
 /* Weather Card */
 .weather-card{
   margin-top:18px;
