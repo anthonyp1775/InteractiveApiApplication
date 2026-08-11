@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "esri-leaflet": "^3.0.19",
+    "leaflet": "^1.9.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

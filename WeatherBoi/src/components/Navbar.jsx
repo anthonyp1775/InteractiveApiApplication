@@ -1,12 +1,25 @@
-function Navbar (){
+import logo from "../assets/Weather_Boi_Img.png";
+
+function Navbar ({ page, onNavigate }){
 return (
     <nav className="navbar">
-<h2>WeatherBoi</h2>
+<div className="brand">
+<img src={logo} alt="WeatherBoi logo" className="brand-logo" />
+</div>
 
 <div className="nav-links">
-<button>Home</button>
-<button>Weather</button>
-<button>About</button>
+<button
+  className={page === "home" ? "active" : ""}
+  onClick={() => onNavigate("home")}
+>
+  Home
+</button>
+<button
+  className={page === "radar" ? "active" : ""}
+  onClick={() => onNavigate("radar")}
+>
+  Radar Maps
+</button>
 </div>
     </nav>
 );
